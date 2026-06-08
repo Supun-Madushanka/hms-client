@@ -32,7 +32,9 @@ export interface Patient {
 export interface Appointment {
   id: number;
   patientAuthId: number;
+  patientName: string;
   doctorAuthId: number;
+  doctorName: string;
   appointmentDate: string;
   appointmentTime: string;
   reason: string;
