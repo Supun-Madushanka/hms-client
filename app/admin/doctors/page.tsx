@@ -274,7 +274,7 @@ export default function AdminDoctorsPage() {
                                   setSelectedDoctor(doctor);
                                   setDeleteDialog(true);
                                 }}
-                                className="text-destructive focus:text-destructive"
+                                className="text-destructive focus:text-white"
                               >
                                 <FiTrash2 />
                                 Delete

@@ -5,7 +5,7 @@ import Navbar from "@/components/shared/navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import api from "@/lib/api";
 import { Appointment } from "@/types";
-import { FiCalendar, FiClock } from "react-icons/fi";
+import { FiCalendar, FiClock, FiMoreVertical, FiTrash2 } from "react-icons/fi";
 import {
   Table,
   TableBody,
@@ -14,11 +14,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export default function AdminAppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("ALL");
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
 
   const fetchAppointments = async () => {
     try {
@@ -45,6 +57,21 @@ export default function AdminAppointmentsPage() {
       default: return "bg-gray-500/10 text-gray-500";
     }
   };
+
+  const deleteAppointment = async () => {
+    if (!selectedAppointment) return;
+    setActionLoading(true);
+    try {
+      await api.delete(`/api/appointments/${selectedAppointment.id}`);
+      setDeleteDialog(false);
+      setSelectedAppointment(null);
+      fetchAppointments();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setActionLoading(false);
+    }
+  }
 
   const filters = ["ALL", "PENDING", "CONFIRMED", "COMPLETED", "CANCELLED", "NO_SHOW"];
 
@@ -116,6 +143,7 @@ export default function AdminAppointmentsPage() {
                         <TableHead>Status</TableHead>
                         <TableHead>Reason</TableHead>
                         <TableHead>Notes</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                     </TableHeader>
 
@@ -173,6 +201,34 @@ export default function AdminAppointmentsPage() {
                         <TableCell>
                             {apt.notes || "-"}
                         </TableCell>
+
+                        {/* Actions */}
+                        <TableCell className="text-right">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0"
+                                  >
+                                  <FiMoreVertical />
+                                  </Button>
+                                </DropdownMenuTrigger>
+
+                                <DropdownMenuContent>
+                                    <DropdownMenuItem
+                                      onClick={() => {
+                                        setSelectedAppointment(apt);
+                                        setDeleteDialog(true);
+                                      }}
+                                      className="gap-2 text-destructive focus:text-white"
+                                    >
+                                      <FiTrash2/>
+                                      Delete
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </TableCell>
                         </TableRow>
                     ))}
                     </TableBody>
@@ -182,6 +238,34 @@ export default function AdminAppointmentsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialog} onOpenChange={setDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-primary"> Delete Appointment</DialogTitle>
+          </DialogHeader>
+          <p className="text-muted-foreground">
+            Are you sure you want to delete <strong>{selectedAppointment?.patientName}</strong>?
+            This action cannot be undone.
+          </p>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={deleteAppointment}
+              disabled={actionLoading}
+              className="bg-destructive hover:bg-destructive/90 text-white"
+            >
+              {actionLoading ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -178,7 +178,7 @@ export default function AdminPatientsPage() {
                                     setSelectedPatient(patient);
                                     setDeleteDialog(true);
                                 }}
-                                className="gap-2 text-destructive focus:text-destructive"
+                                className="gap-2 text-destructive focus:text-white"
                                 >
                                 <FiTrash2 />
                                 Delete
