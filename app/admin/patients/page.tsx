@@ -28,6 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PatientProfileModal } from "@/components/admin/patient-profile-modal";
 
 export default function AdminPatientsPage() {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -35,6 +36,7 @@ export default function AdminPatientsPage() {
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [profileDialog, setProfileDialog] = useState(false);
 
   const fetchPatients = async () => {
     try {
@@ -63,6 +65,16 @@ export default function AdminPatientsPage() {
       console.error(err);
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  const handleViewProfile = async (patient: Patient) => {
+    try {
+        const res = await api.get(`/api/users/patients/${patient.id}`);
+        setSelectedPatient(res.data.data);
+        setProfileDialog(true);
+    } catch (err) {
+        console.error(err);
     }
   };
 
@@ -155,7 +167,9 @@ export default function AdminPatientsPage() {
                             </DropdownMenuTrigger>
 
                             <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
+                                <DropdownMenuItem 
+                                    onClick={() => handleViewProfile(patient)}
+                                >
                                     <FiEye className="text-accent" />
                                     View Profile
                                 </DropdownMenuItem>
@@ -209,6 +223,13 @@ export default function AdminPatientsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Profile modal */}
+      <PatientProfileModal
+        open={profileDialog}
+        onOpenChange={setProfileDialog}
+        patient={selectedPatient}
+      />
 
     </div>
   );
