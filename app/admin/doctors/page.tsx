@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import api from "@/lib/api";
 import { Doctor } from "@/types";
-import { FiMoreVertical, FiCheck, FiX, FiTrash2, FiUserCheck, FiUserX } from "react-icons/fi";
+import { FiMoreVertical, FiCheck, FiX, FiTrash2, FiUserCheck, FiUserX, FiEye } from "react-icons/fi";
 import {
   Table,
   TableBody,
@@ -28,6 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DoctorProfileModal } from "@/components/admin/doctor-profile-modal";
 
 export default function AdminDoctorsPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -35,6 +36,7 @@ export default function AdminDoctorsPage() {
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [profileDialog, setProfileDialog] = useState(false);
 
   const fetchDoctors = async () => {
     try {
@@ -119,6 +121,16 @@ export default function AdminDoctorsPage() {
         return "bg-red-500/10 text-red-500";
       default:
         return "bg-gray-500/10 text-gray-500";
+    }
+  };
+
+  const handleViewProfile = async (doctor: Doctor) => {
+    try {
+      const res = await api.get(`/api/users/doctors/${doctor.id}`);
+      setSelectedDoctor(res.data.data);
+      setProfileDialog(true);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -232,6 +244,13 @@ export default function AdminDoctorsPage() {
 
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem
+                                onClick={() => handleViewProfile(doctor)}
+                              >
+                                <FiEye className="text-accent" />
+                                View Profile
+                              </DropdownMenuItem>
+
+                              <DropdownMenuItem
                                 onClick={() => handleStatusToggle(doctor)}
                               >
                                 {doctor.approvalStatus === "APPROVED" ? (
@@ -297,6 +316,13 @@ export default function AdminDoctorsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Profile dialog */}
+      <DoctorProfileModal
+        open={profileDialog}
+        onOpenChange={setProfileDialog}
+        doctor={selectedDoctor}
+      />
 
     </div>
   );
