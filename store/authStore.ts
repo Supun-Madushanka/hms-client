@@ -14,13 +14,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   token: null,
 
   setAuth: (user: User, token: string) => {
-    localStorage.setItem("token", token);
+    // Store in cookies
+    document.cookie = `token=${token}; path=/; max-age=86400`; // 24 hours
+    document.cookie = `role=${user.role}; path=/; max-age=86400`;
+    // Also keep in localStorage for easy access
     localStorage.setItem("user", JSON.stringify(user));
     set({ user, token });
   },
 
   clearAuth: () => {
-    localStorage.removeItem("token");
+    // Clear cookies
+    document.cookie = "token=; path=/; max-age=0";
+    document.cookie = "role=; path=/; max-age=0";
     localStorage.removeItem("user");
     set({ user: null, token: null });
   },
