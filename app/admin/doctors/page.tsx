@@ -173,6 +173,7 @@ export default function AdminDoctorsPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Doctor</TableHead>
+                    <TableHead>License</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Speciality</TableHead>
                     <TableHead>Experience</TableHead>
@@ -187,6 +188,8 @@ export default function AdminDoctorsPage() {
                       <TableCell>
                         {doctor.name}
                       </TableCell>
+
+                      <TableCell>{doctor.licenseNumber}</TableCell>
 
                       <TableCell>{doctor.email}</TableCell>
 
