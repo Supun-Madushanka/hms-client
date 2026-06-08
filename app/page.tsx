@@ -6,29 +6,42 @@ export default function LandingPage() {
     <main className="min-h-screen bg-background">
 
       {/* Navbar */}
-      <nav className="bg-primary px-8 py-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">H</span>
-          </div>
-          <div>
-            <span className="text-white text-xl font-bold">HMS</span>
-            <p className="text-accent text-xs">Hospital Management System</p>
-          </div>
-        </div>
-        <div className="flex gap-3">
-          <Link href="/login">
-            <Button variant="outline" className="text-white border-white/40 hover:bg-white/10 hover:text-white">
-              Login
-            </Button>
+      <header className="bg-primary sticky top-0 z-50 shadow-md">
+        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">H</span>
+            </div>
+
+            <div>
+              <h1 className="text-white text-xl font-bold">HMS</h1>
+              <p className="text-accent text-xs">
+                Hospital Management System
+              </p>
+            </div>
           </Link>
-          <Link href="/register/patient">
-            <Button className="bg-accent hover:bg-accent/90 text-white">
-              Get Started
-            </Button>
-          </Link>
+
+          <div className="flex items-center gap-4">
+            <Link href="/login">
+              <Button
+                variant="outline"
+                className="text-white border-white/40 hover:bg-white/10 hover:text-white"
+              >
+                Login
+              </Button>
+            </Link>
+
+            <Link href="/register/patient">
+              <Button className="bg-accent hover:bg-accent/90 text-white">
+                Get Started
+              </Button>
+            </Link>
+          </div>
+
         </div>
-      </nav>
+      </header>
 
       {/* Hero Section */}
       <section className="relative px-8 py-24 overflow-hidden">
