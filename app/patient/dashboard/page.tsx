@@ -147,7 +147,7 @@ export default function PatientDashboard() {
               <TableBody>
                 {appointments.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground py-12">
+                    <TableCell colSpan={6} className="text-center text-muted-foreground py-12">
                       No appointments yet.{" "}
                       <Link href="/patient/book" className="text-accent hover:underline">
                         Book your first appointment!
@@ -161,9 +161,9 @@ export default function PatientDashboard() {
                       <TableCell>
                         {apt.doctorName}
                       </TableCell>
-                      <TableCell className="text-sm">{apt.reason}</TableCell>
                       <TableCell className="text-sm">{apt.appointmentDate}</TableCell>
                       <TableCell className="text-sm">{apt.appointmentTime}</TableCell>
+                      <TableCell className="text-sm">{apt.reason}</TableCell>
                       <TableCell>{getStatusBadge(apt.status)}</TableCell>
                     </TableRow>
                   ))
